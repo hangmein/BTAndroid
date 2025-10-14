@@ -2,6 +2,7 @@
     android:shape="oval">
     <size
         android:width="80dp"
+
         android:height="80dp" />
      <!-- Màu nền -->
 </shape>
