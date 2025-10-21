@@ -8,12 +8,187 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/textHeader"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:background="#224263"
+        android:gravity="center_vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:text="Currency Converter"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/labelFrom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:text="From"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textHeader" />
+
+    <!-- START: THAY THẾ SPINNER FROM BẰNG CUSTOM VIEW -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/currencySelectorFrom"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="24dp"
+
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="@id/labelFrom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/labelFrom"
+        app:layout_constraintTop_toTopOf="@id/labelFrom">
+
+        <!-- Image Cờ -->
+        <ImageView
+            android:id="@+id/flagFrom"
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/flag_of_the_united_states"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- TextView Tên Tiền tệ -->
+        <TextView
+            android:id="@+id/textCurrencyFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="USD"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            app:layout_constraintStart_toEndOf="@id/flagFrom"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- Icon mũi tên sổ xuống -->
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_arrow_down"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- END: THAY THẾ SPINNER FROM BẰNG CUSTOM VIEW -->
+
+    <EditText
+        android:id="@+id/editTextAmount"
+        android:layout_width="0dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_edittext_circle"
+        android:hint="Enter amount"
+        android:inputType="numberDecimal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@id/currencySelectorFrom"
+        app:layout_constraintStart_toStartOf="@id/labelFrom"
+        app:layout_constraintTop_toBottomOf="@id/currencySelectorFrom" />
+
+    <TextView
+        android:id="@+id/labelTo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="To"
+        android:textSize="22sp"
+        app:layout_constraintStart_toStartOf="@id/labelFrom"
+        app:layout_constraintTop_toBottomOf="@id/editTextAmount" />
+
+    <!-- START: THAY THẾ SPINNER TO BẰNG CUSTOM VIEW -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/currencySelectorTo"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="24dp"
+
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="@id/labelTo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/currencySelectorFrom"
+        app:layout_constraintTop_toTopOf="@id/labelTo">
+
+        <!-- Image Cờ -->
+        <ImageView
+            android:id="@+id/flagTo"
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/flag_of_thailand"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- TextView Tên Tiền tệ -->
+        <TextView
+            android:id="@+id/textCurrencyTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="BAHT"
+            android:textSize="18sp"
+            android:textColor="@android:color/black"
+            app:layout_constraintStart_toEndOf="@id/flagTo"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- Icon mũi tên sổ xuống -->
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_arrow_down"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- END: THAY THẾ SPINNER TO BẰNG CUSTOM VIEW -->
+
+    <TextView
+        android:id="@+id/textResult"
+        android:layout_width="0dp"
+        android:layout_height="54dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_edittext_circle"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:text="Result"
+        android:textSize="20sp"
+        android:textColor="#555555"
+        app:layout_constraintEnd_toEndOf="@id/currencySelectorTo"
+        app:layout_constraintStart_toStartOf="@id/labelTo"
+        app:layout_constraintTop_toBottomOf="@id/currencySelectorTo" />
+
+    <Button
+        android:id="@+id/buttonConvert"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="32dp"
+        android:text="Convert"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/textResult"
+        app:layout_constraintStart_toStartOf="@id/textResult" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
