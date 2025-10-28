@@ -34,7 +34,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textHeader" />
 
-    <!-- START: THAY THẾ SPINNER FROM BẰNG CUSTOM VIEW -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/currencySelectorFrom"
         android:layout_width="0dp"
@@ -62,7 +61,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-        <!-- TextView Tên Tiền tệ -->
         <TextView
             android:id="@+id/textCurrencyFrom"
             android:layout_width="wrap_content"
@@ -85,7 +83,6 @@
             app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <!-- END: THAY THẾ SPINNER FROM BẰNG CUSTOM VIEW -->
 
     <EditText
         android:id="@+id/editTextAmount"
@@ -112,7 +109,6 @@
         app:layout_constraintStart_toStartOf="@id/labelFrom"
         app:layout_constraintTop_toBottomOf="@id/editTextAmount" />
 
-    <!-- START: THAY THẾ SPINNER TO BẰNG CUSTOM VIEW -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/currencySelectorTo"
         android:layout_width="0dp"
