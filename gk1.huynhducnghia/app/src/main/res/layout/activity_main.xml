@@ -11,10 +11,22 @@
         android:id="@+id/headerBackground"
         android:layout_width="0dp"
         android:layout_height="227dp"
-        android:background="@mipmap/backgound"
+        android:background="@drawable/background"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="151dp"
+            android:layout_height="126dp"
+            android:background="@drawable/logo"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

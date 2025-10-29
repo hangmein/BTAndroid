@@ -6,23 +6,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F9F8FF"
-    tools:context=".BMI">  <androidx.appcompat.widget.Toolbar
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:layout_height="80dp"
-    android:background="#294b72"
-    android:gravity="center_vertical"
-    android:paddingStart="20dp"
-    app:layout_constraintTop_toTopOf="parent"
-    app:title="BMI Calculator"
-    app:titleTextColor="@android:color/white" />
+    tools:context=".BMI">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerBackground"
+        android:layout_width="0dp"
+        android:layout_height="227dp"
+        android:background="@drawable/background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="151dp"
+            android:layout_height="126dp"
+            android:background="@drawable/logo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.015"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.297" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="202dp"
+            android:layout_height="45dp"
+            android:text="Tính chỉ số cơ thể"
+            android:textColor="@color/white"
+            tools:layout_editor_absoluteX="155dp"
+            tools:layout_editor_absoluteY="73dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/heightLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:hint="Chiều cao (cm)"
         app:boxBackgroundColor="@android:color/white"
         app:boxBackgroundMode="outline"
@@ -31,8 +55,10 @@
         app:boxCornerRadiusTopEnd="12dp"
         app:boxCornerRadiusTopStart="12dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="headerBackground"
+
+        app:layout_constraintTop_toBottomOf="@id/headerBackground"
+
         app:startIconTint="#4CAF50">
 
         <com.google.android.material.textfield.TextInputEditText
