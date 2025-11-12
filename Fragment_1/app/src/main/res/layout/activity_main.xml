@@ -8,17 +8,17 @@
     tools:context=".MainActivity">
 
         <fragment
-            android:id="@+id/contentfrag"
+            android:id="@+id/Content_flagment"
             android:name="ntu.nghia.fragment_1.FragmentContent"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/footerfrag"
+            app:layout_constraintBottom_toTopOf="@id/Footer_flagment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
     <fragment
-        android:id="@+id/footerfrag"
+        android:id="@+id/Footer_flagment"
         android:name="ntu.nghia.fragment_1.FragmentFooter"
         android:layout_width="match_parent"
         android:layout_height="100dp"
