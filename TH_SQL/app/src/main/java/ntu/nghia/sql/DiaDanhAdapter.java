@@ -26,27 +26,21 @@ public class DiaDanhAdapter extends RecyclerView.Adapter<DiaDanhAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Gắn layout item_dia_danh.xml vào mỗi dòng
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_dia_danh, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // Lấy dữ liệu tại vị trí position
         DiaDanh diaDanh = listDiaDanh.get(position);
 
-        // Gán dữ liệu lên giao diện
         holder.txtTen.setText(diaDanh.getTen());
         holder.imgHinh.setImageResource(diaDanh.getHinhAnhResId());
 
-        // Xử lý sự kiện khi ấn vào một dòng
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ChiTietActivity.class);
-                // Truyền cả đối tượng DiaDanh sang màn hình chi tiết
-                // (Yêu cầu class DiaDanh phải implements Serializable)
                 intent.putExtra("object_dia_danh", diaDanh);
                 context.startActivity(intent);
             }

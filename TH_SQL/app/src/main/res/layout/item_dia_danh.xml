@@ -12,7 +12,6 @@
         android:padding="8dp"
         android:gravity="center_vertical">
 
-        <!-- Ảnh đại diện nhỏ -->
         <ImageView
             android:id="@+id/imgHinhNho"
             android:layout_width="80dp"
@@ -20,7 +19,6 @@
             android:scaleType="centerCrop"
             android:src="@drawable/ic_launcher_background" />
 
-        <!-- Tên địa danh -->
         <TextView
             android:id="@+id/txtTenNho"
             android:layout_width="wrap_content"

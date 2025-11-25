@@ -9,7 +9,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Ảnh lớn -->
         <ImageView
             android:id="@+id/imgHinhLon"
             android:layout_width="match_parent"
@@ -18,7 +17,6 @@
             android:src="@drawable/ic_launcher_background"
             android:layout_marginBottom="16dp"/>
 
-        <!-- Tên địa danh -->
         <TextView
             android:id="@+id/txtTenLon"
             android:layout_width="match_parent"
@@ -29,7 +27,6 @@
             android:textColor="@android:color/black"
             android:layout_marginBottom="8dp"/>
 
-        <!-- Mô tả chi tiết -->
         <TextView
             android:id="@+id/txtMoTaChiTiet"
             android:layout_width="match_parent"

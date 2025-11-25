@@ -11,13 +11,10 @@ public class ChiTietActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chi_tiet);
-
-        // Ánh xạ view
         ImageView imgHinh = findViewById(R.id.imgHinhLon);
         TextView txtTen = findViewById(R.id.txtTenLon);
         TextView txtMoTa = findViewById(R.id.txtMoTaChiTiet);
 
-        // Nhận dữ liệu từ Intent
         if (getIntent().hasExtra("object_dia_danh")) {
             DiaDanh diaDanh = (DiaDanh) getIntent().getSerializableExtra("object_dia_danh");
 
