@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Ảnh lớn -->
+        <ImageView
+            android:id="@+id/imgHinhLon"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_launcher_background"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Tên địa danh -->
+        <TextView
+            android:id="@+id/txtTenLon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tên Địa Danh"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Mô tả chi tiết -->
+        <TextView
+            android:id="@+id/txtMoTaChiTiet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nội dung mô tả chi tiết sẽ hiện ở đây..."
+            android:textSize="16sp"
+            android:lineSpacingExtra="4dp"/>
+
+    </LinearLayout>
+</ScrollView>
