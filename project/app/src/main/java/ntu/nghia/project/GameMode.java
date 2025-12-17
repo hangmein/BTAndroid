@@ -1,10 +1,10 @@
 package ntu.nghia.project;
 
 public class GameMode {
-    private int id;             // ID giữ nguyên
-    private String tenCheDo;    // Thay cho name
-    private String moTa;        // Thay cho description
-    private int anhDaiDien;     // Thay cho iconResId
+    private int id;
+    private String tenCheDo;
+    private String moTa;
+    private int anhDaiDien;     
 
     public GameMode(int id, String tenCheDo, String moTa, int anhDaiDien) {
         this.id = id;
