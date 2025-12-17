@@ -40,12 +40,4 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    @Override
-    public void onBackPressed() {
-        if (drawerLayout.isDrawerOpen(findViewById(R.id.navigation_view))) {
-            drawerLayout.closeDrawer(findViewById(R.id.navigation_view));
-        } else {
-            super.onBackPressed();
-        }
-    }
 }
