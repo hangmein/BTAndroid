@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_home">
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="ntu.nghia.project.HomeFragment"
+        android:label="Trang chủ"
+        tools:layout="@layout/fragment_home">
+
+        <action
+            android:id="@+id/action_nav_home_to_nav_play"
+            app:destination="@id/nav_play" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_play"
+        android:name="ntu.nghia.project.PlayFragment"
+        android:label="Đang chơi"
+        tools:layout="@layout/fragment_play" />
+
+    <fragment
+        android:id="@+id/nav_profile"
+        android:name="ntu.nghia.project.ProfileFragment"
+        android:label="Hồ sơ"
+        tools:layout="@layout/fragment_profile" />
+</navigation>
