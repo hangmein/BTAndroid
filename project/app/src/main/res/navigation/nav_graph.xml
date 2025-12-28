@@ -6,7 +6,7 @@
     app:startDestination="@id/nav_home">
     <fragment
         android:id="@+id/nav_home"
-        android:name="ntu.nghia.project.HomeFragment"
+        android:name="ntu.nghia.project.fragment.HomeFragment"
         android:label="Trang chủ"
         tools:layout="@layout/fragment_home">
 
@@ -17,13 +17,13 @@
 
     <fragment
         android:id="@+id/nav_play"
-        android:name="ntu.nghia.project.PlayFragment"
+        android:name="ntu.nghia.project.fragment.PlayFragment"
         android:label="Đang chơi"
         tools:layout="@layout/fragment_play" />
 
     <fragment
         android:id="@+id/nav_profile"
-        android:name="ntu.nghia.project.ProfileFragment"
+        android:name="ntu.nghia.project.fragment.ProfileFragment"
         android:label="Hồ sơ"
         tools:layout="@layout/fragment_profile" />
 </navigation>

@@ -42,4 +42,10 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.7.3")
+
+    // Thay thế đoạn bị lỗi bằng đoạn này:
+    val room_version = "2.6.1"
+
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
 }

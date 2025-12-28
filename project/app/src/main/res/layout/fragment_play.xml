@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#0F2027"
     android:padding="16dp"
-    tools:context=".PlayFragment"> <TextView
+    tools:context=".fragment.PlayFragment"> <TextView
     android:id="@+id/tvQuestionCount"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

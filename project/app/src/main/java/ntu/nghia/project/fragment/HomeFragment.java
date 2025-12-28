@@ -1,4 +1,4 @@
-package ntu.nghia.project;
+package ntu.nghia.project.fragment;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -14,6 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
+
+import ntu.nghia.project.R;
+import ntu.nghia.project.model.GameMode;
 
 public class HomeFragment extends Fragment {
 

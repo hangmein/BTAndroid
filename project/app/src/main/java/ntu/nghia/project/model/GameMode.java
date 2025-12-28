@@ -1,4 +1,4 @@
-package ntu.nghia.project;
+package ntu.nghia.project.model;
 
 public class GameMode {
     private int id;
