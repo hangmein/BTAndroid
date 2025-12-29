@@ -1,4 +1,4 @@
-package ntu.nghia.project.database;
+package ntu.nghia.project.database.db_question;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

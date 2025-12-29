@@ -1,4 +1,4 @@
-package ntu.nghia.project.database;
+package ntu.nghia.project.database.db_user;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;

@@ -15,13 +15,11 @@ import java.util.List;
 import ntu.nghia.project.LeaderboardAdapter;
 import ntu.nghia.project.R;
 import ntu.nghia.project.database.AppDatabase;
-import ntu.nghia.project.database.User;
+import ntu.nghia.project.database.db_user.User;
 
 public class ProfileFragment extends Fragment {
-
     private RecyclerView rcvLeaderboard;
     private LeaderboardAdapter adapter;
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -36,13 +34,11 @@ public class ProfileFragment extends Fragment {
         rcvLeaderboard.setAdapter(adapter);
         return view;
     }
-
     @Override
     public void onResume() {
         super.onResume();
         loadData();
     }
-
     private void loadData() {
         try {
             AppDatabase db = AppDatabase.getDatabase(getContext());

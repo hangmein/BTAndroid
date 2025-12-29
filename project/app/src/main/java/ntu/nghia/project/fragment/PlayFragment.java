@@ -17,15 +17,16 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList; // Cần thêm cái này
 import java.util.Collections;
 import java.util.List;
 
 import ntu.nghia.project.R;
 import ntu.nghia.project.database.AppDatabase;
-import ntu.nghia.project.database.Question;
-import ntu.nghia.project.database.QuestionDao;
-import ntu.nghia.project.database.User;
-import ntu.nghia.project.database.UserDao;
+import ntu.nghia.project.database.db_question.Question;
+import ntu.nghia.project.database.db_question.QuestionDao;
+import ntu.nghia.project.database.db_user.User;
+import ntu.nghia.project.database.db_user.UserDao;
 
 public class PlayFragment extends Fragment {
 
@@ -39,12 +40,15 @@ public class PlayFragment extends Fragment {
     private static final long TIME_LIMIT = 30000;
 
     private ImageButton btnHelp5050, btnHelpDocs, btnHelpSwitch;
-
     private boolean is5050Used = false;
     private boolean isDocsUsed = false;
     private boolean isSwitchUsed = false;
 
+    // [QUAN TRỌNG] Biến lưu nội dung đáp án đúng (vì vị trí nút sẽ bị đảo)
+    private String currentCorrectContent = "";
+
     public PlayFragment() {
+        // Required empty public constructor
     }
 
     @Override
@@ -57,10 +61,48 @@ public class PlayFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // 1. Ánh xạ View
         btnHelp5050 = view.findViewById(R.id.btnHelp5050);
         btnHelpDocs = view.findViewById(R.id.btnHelpDocs);
         btnHelpSwitch = view.findViewById(R.id.btnHelpSwitch);
+        tvQuestionCount = view.findViewById(R.id.tvQuestionCount);
+        tvScore = view.findViewById(R.id.tvScore);
+        tvTimer = view.findViewById(R.id.tvTimer);
+        tvQuestionContent = view.findViewById(R.id.tvQuestionContent);
+        btnOptionA = view.findViewById(R.id.btnOptionA);
+        btnOptionB = view.findViewById(R.id.btnOptionB);
+        btnOptionC = view.findViewById(R.id.btnOptionC);
+        btnOptionD = view.findViewById(R.id.btnOptionD);
 
+        setupLifelines();
+
+        // 2. Lấy dữ liệu
+        AppDatabase db = AppDatabase.getDatabase(requireContext());
+        QuestionDao dao = db.questionDao();
+
+        int modeIdCanLay = 1;
+        if (getArguments() != null) {
+            modeIdCanLay = getArguments().getInt("selected_mode_id", 1);
+        }
+
+        listQuestions = dao.getQuestionsByMode(modeIdCanLay);
+
+        if (listQuestions != null && listQuestions.size() > 0) {
+            Collections.shuffle(listQuestions);
+            showQuestion();
+        } else {
+            Toast.makeText(getContext(), "Đang tải dữ liệu...", Toast.LENGTH_SHORT).show();
+            Navigation.findNavController(view).popBackStack();
+        }
+
+        // [SỬA ĐỔI] Truyền thẳng nút bấm vào hàm checkAnswer thay vì chuỗi "A", "B"
+        btnOptionA.setOnClickListener(v -> checkAnswer(btnOptionA));
+        btnOptionB.setOnClickListener(v -> checkAnswer(btnOptionB));
+        btnOptionC.setOnClickListener(v -> checkAnswer(btnOptionC));
+        btnOptionD.setOnClickListener(v -> checkAnswer(btnOptionD));
+    }
+
+    private void setupLifelines() {
         btnHelp5050.setOnClickListener(v -> {
             if (!is5050Used) {
                 handle5050();
@@ -84,50 +126,36 @@ public class PlayFragment extends Fragment {
                 disableLifelineButton(btnHelpSwitch);
             }
         });
-
-        tvQuestionCount = view.findViewById(R.id.tvQuestionCount);
-        tvScore = view.findViewById(R.id.tvScore);
-        tvTimer = view.findViewById(R.id.tvTimer);
-        tvQuestionContent = view.findViewById(R.id.tvQuestionContent);
-        btnOptionA = view.findViewById(R.id.btnOptionA);
-        btnOptionB = view.findViewById(R.id.btnOptionB);
-        btnOptionC = view.findViewById(R.id.btnOptionC);
-        btnOptionD = view.findViewById(R.id.btnOptionD);
-
-        AppDatabase db = AppDatabase.getDatabase(requireContext());
-        QuestionDao dao = db.questionDao();
-
-        if (dao.countQuestions() == 0) {
-            fakeData(dao);
-        }
-
-        listQuestions = dao.getQuestionsByMode(1);
-
-        Collections.shuffle(listQuestions);
-
-        if (listQuestions != null && listQuestions.size() > 0) {
-            showQuestion();
-        } else {
-            Toast.makeText(getContext(), "Không có dữ liệu câu hỏi!", Toast.LENGTH_SHORT).show();
-            Navigation.findNavController(view).popBackStack();
-        }
-
-        btnOptionA.setOnClickListener(v -> checkAnswer("A", btnOptionA));
-        btnOptionB.setOnClickListener(v -> checkAnswer("B", btnOptionB));
-        btnOptionC.setOnClickListener(v -> checkAnswer("C", btnOptionC));
-        btnOptionD.setOnClickListener(v -> checkAnswer("D", btnOptionD));
     }
 
+    // --- [LOGIC MỚI] ĐẢO VỊ TRÍ CÂU HỎI ---
     private void showQuestion() {
         resetButtonColors();
-
         Question q = listQuestions.get(currentQuestionIndex);
 
         tvQuestionContent.setText(q.content);
-        btnOptionA.setText("A. " + q.optionA);
-        btnOptionB.setText("B. " + q.optionB);
-        btnOptionC.setText("C. " + q.optionC);
-        btnOptionD.setText("D. " + q.optionD);
+
+        // 1. Tìm ra nội dung đúng thực sự là gì
+        if (q.correctAnswer.equals("A")) currentCorrectContent = q.optionA;
+        else if (q.correctAnswer.equals("B")) currentCorrectContent = q.optionB;
+        else if (q.correctAnswer.equals("C")) currentCorrectContent = q.optionC;
+        else currentCorrectContent = q.optionD;
+
+        // 2. Tạo danh sách tạm để trộn
+        List<String> options = new ArrayList<>();
+        options.add(q.optionA);
+        options.add(q.optionB);
+        options.add(q.optionC);
+        options.add(q.optionD);
+
+        // 3. Trộn ngẫu nhiên danh sách này
+        Collections.shuffle(options);
+
+        // 4. Gán lên giao diện (Lúc này vị trí đã thay đổi so với database)
+        btnOptionA.setText("A. " + options.get(0));
+        btnOptionB.setText("B. " + options.get(1));
+        btnOptionC.setText("C. " + options.get(2));
+        btnOptionD.setText("D. " + options.get(3));
 
         tvQuestionCount.setText("Question: " + (currentQuestionIndex + 1) + "/" + listQuestions.size());
         tvScore.setText("Score: " + score);
@@ -135,23 +163,44 @@ public class PlayFragment extends Fragment {
         startTimer();
     }
 
-    private void checkAnswer(String userChoice, Button clickedButton) {
+    // --- [LOGIC MỚI] KIỂM TRA THEO NỘI DUNG ---
+    private void checkAnswer(Button clickedButton) {
         if (countDownTimer != null) countDownTimer.cancel();
-
         setButtonsEnabled(false);
 
-        Question currentQ = listQuestions.get(currentQuestionIndex);
+        // Lấy text trên nút người dùng bấm (Ví dụ: "A. Con Mèo")
+        String buttonText = clickedButton.getText().toString();
 
-        if (userChoice.equals(currentQ.correctAnswer)) {
+        // Kiểm tra xem text đó có CHỨA nội dung đúng không
+        if (buttonText.contains(currentCorrectContent)) {
+            // ĐÚNG
             clickedButton.setBackgroundColor(Color.parseColor("#4CAF50"));
             score += 100;
             tvScore.setText("Score: " + score);
         } else {
+            // SAI
             clickedButton.setBackgroundColor(Color.parseColor("#F44336"));
-            showCorrectAnswer(currentQ.correctAnswer);
+            // Tìm và hiện đáp án đúng (vì nó có thể nằm ở nút bất kỳ)
+            highlightCorrectAnswer();
         }
 
         new Handler().postDelayed(this::nextQuestion, 1000);
+    }
+
+    // --- [LOGIC MỚI] TÌM NÚT CHỨA ĐÁP ÁN ĐÚNG ĐỂ TÔ XANH ---
+    private void highlightCorrectAnswer() {
+        if (btnOptionA.getText().toString().contains(currentCorrectContent)) {
+            btnOptionA.setBackgroundColor(Color.parseColor("#4CAF50"));
+        }
+        else if (btnOptionB.getText().toString().contains(currentCorrectContent)) {
+            btnOptionB.setBackgroundColor(Color.parseColor("#4CAF50"));
+        }
+        else if (btnOptionC.getText().toString().contains(currentCorrectContent)) {
+            btnOptionC.setBackgroundColor(Color.parseColor("#4CAF50"));
+        }
+        else if (btnOptionD.getText().toString().contains(currentCorrectContent)) {
+            btnOptionD.setBackgroundColor(Color.parseColor("#4CAF50"));
+        }
     }
 
     private void nextQuestion() {
@@ -164,15 +213,80 @@ public class PlayFragment extends Fragment {
         }
     }
 
+    private void endGame() {
+        Toast.makeText(getContext(), "Kết thúc! Tổng điểm: " + score, Toast.LENGTH_LONG).show();
+        showCustomGameOverDialog();
+    }
+
+    private void showCustomGameOverDialog() {
+        if (getContext() == null) return;
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        View dialogView = inflater.inflate(R.layout.dialog_game_over, null);
+
+        TextView tvFinalScoreDialog = dialogView.findViewById(R.id.tvFinalScoreDialog);
+        android.widget.EditText etPlayerName = dialogView.findViewById(R.id.etPlayerName);
+        Button btnSave = dialogView.findViewById(R.id.btnSave);
+        Button btnDiscard = dialogView.findViewById(R.id.btnDiscard);
+
+        tvFinalScoreDialog.setText(String.valueOf(score));
+
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
+        builder.setView(dialogView);
+        builder.setCancelable(false);
+
+        final android.app.AlertDialog dialog = builder.create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+
+        btnSave.setOnClickListener(v -> {
+            String playerName = etPlayerName.getText().toString().trim();
+            if (playerName.isEmpty()) playerName = "Unknown Agent";
+            saveScoreToDatabase(playerName, score);
+            dialog.dismiss();
+        });
+
+        btnDiscard.setOnClickListener(v -> {
+            if (getView() != null) Navigation.findNavController(requireView()).popBackStack();
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    private void saveScoreToDatabase(String name, int newScore) {
+        Context context = getContext();
+        if (context == null) return;
+        try {
+            AppDatabase db = AppDatabase.getDatabase(context);
+            UserDao userDao = db.userDao();
+            User existingUser = userDao.getUserByName(name);
+            if (existingUser == null) {
+                User newUser = new User();
+                newUser.name = name;
+                newUser.score = newScore;
+                userDao.insertUser(newUser);
+            } else {
+                if (newScore > existingUser.score) {
+                    existingUser.score = newScore;
+                    userDao.updateUser(existingUser);
+                }
+            }
+            Toast.makeText(context, "Đã lưu kỷ lục!", Toast.LENGTH_SHORT).show();
+            if (getView() != null) Navigation.findNavController(requireView()).popBackStack();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Lỗi lưu điểm: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
-
         countDownTimer = new CountDownTimer(TIME_LIMIT, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 tvTimer.setText(String.valueOf(millisUntilFinished / 1000));
             }
-
             @Override
             public void onFinish() {
                 tvTimer.setText("0");
@@ -181,31 +295,16 @@ public class PlayFragment extends Fragment {
         }.start();
     }
 
-    private void endGame() {
-        Toast.makeText(getContext(), "Kết thúc! Tổng điểm: " + score, Toast.LENGTH_LONG).show();
-        Navigation.findNavController(requireView());
-        showCustomGameOverDialog();
-    }
-
-    private void showCorrectAnswer(String correctAnswer) {
-        if (correctAnswer.equals("A")) btnOptionA.setBackgroundColor(Color.parseColor("#4CAF50"));
-        if (correctAnswer.equals("B")) btnOptionB.setBackgroundColor(Color.parseColor("#4CAF50"));
-        if (correctAnswer.equals("C")) btnOptionC.setBackgroundColor(Color.parseColor("#4CAF50"));
-        if (correctAnswer.equals("D")) btnOptionD.setBackgroundColor(Color.parseColor("#4CAF50"));
-    }
-
     private void resetButtonColors() {
         int defaultColor = R.drawable.btn_tech;
         btnOptionA.setBackgroundResource(defaultColor);
         btnOptionB.setBackgroundResource(defaultColor);
         btnOptionC.setBackgroundResource(defaultColor);
         btnOptionD.setBackgroundResource(defaultColor);
-
         btnOptionA.setVisibility(View.VISIBLE);
         btnOptionB.setVisibility(View.VISIBLE);
         btnOptionC.setVisibility(View.VISIBLE);
         btnOptionD.setVisibility(View.VISIBLE);
-
         setButtonsEnabled(true);
     }
 
@@ -216,62 +315,38 @@ public class PlayFragment extends Fragment {
         btnOptionD.setEnabled(enable);
     }
 
-    private void fakeData(QuestionDao dao) {
-        dao.insertAll(
-                new Question("Java chạy trên nền tảng nào?", "JVM", "JDK", "JRE", "Windows", "A", 1),
-                new Question("Biến 'final' trong Java có ý nghĩa gì?", "Không thể thay đổi", "Có thể kế thừa", "Biến cục bộ", "Biến toàn cục", "A", 1),
-                new Question("Android dựa trên kernel nào?", "Linux", "Windows", "Unix", "Hybrid", "A", 1),
-                new Question("Activity có vòng đời bắt đầu bằng hàm nào?", "onStart", "onCreate", "onResume", "onInit", "B", 1),
-                new Question("File layout Android có đuôi là gì?", ".java", ".kt", ".xml", ".class", "C", 1)
-        );
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (countDownTimer != null) countDownTimer.cancel();
-    }
-
+    // --- [LOGIC MỚI] 50:50 CŨNG PHẢI CHECK THEO NỘI DUNG ---
     private void handle5050() {
-        Question currentQ = listQuestions.get(currentQuestionIndex);
-        String correct = currentQ.correctAnswer;
+        // Tìm các nút SAI (không chứa nội dung đúng)
+        List<Button> wrongButtons = new ArrayList<>();
 
-        java.util.List<Button> wrongButtons = new java.util.ArrayList<>();
-        if (!correct.equals("A")) wrongButtons.add(btnOptionA);
-        if (!correct.equals("B")) wrongButtons.add(btnOptionB);
-        if (!correct.equals("C")) wrongButtons.add(btnOptionC);
-        if (!correct.equals("D")) wrongButtons.add(btnOptionD);
+        if (!btnOptionA.getText().toString().contains(currentCorrectContent)) wrongButtons.add(btnOptionA);
+        if (!btnOptionB.getText().toString().contains(currentCorrectContent)) wrongButtons.add(btnOptionB);
+        if (!btnOptionC.getText().toString().contains(currentCorrectContent)) wrongButtons.add(btnOptionC);
+        if (!btnOptionD.getText().toString().contains(currentCorrectContent)) wrongButtons.add(btnOptionD);
 
+        // Ẩn 2 nút sai bất kỳ
         Collections.shuffle(wrongButtons);
-
-        wrongButtons.get(0).setVisibility(View.INVISIBLE);
-        wrongButtons.get(1).setVisibility(View.INVISIBLE);
-
+        if (wrongButtons.size() >= 2) {
+            wrongButtons.get(0).setVisibility(View.INVISIBLE);
+            wrongButtons.get(1).setVisibility(View.INVISIBLE);
+        }
         Toast.makeText(getContext(), "Đã loại bỏ 2 phương án sai!", Toast.LENGTH_SHORT).show();
     }
-
     private void handleDocs() {
-        Question currentQ = listQuestions.get(currentQuestionIndex);
-
-        String message = "Reading documentation...\nAnalyzing StackOverflow...\n\n";
-
-        if (currentQ.correctAnswer.equals("A")) message += ">> Option A: 85% match\n   Option B: 5%\n   Option C: 4%\n   Option D: 6%";
-        else if (currentQ.correctAnswer.equals("B")) message += "   Option A: 10%\n>> Option B: 80% match\n   Option C: 5%\n   Option D: 5%";
-        else if (currentQ.correctAnswer.equals("C")) message += "   Option A: 5%\n   Option B: 5%\n>> Option C: 88% match\n   Option D: 2%";
-        else message += "   Option A: 8%\n   Option B: 2%\n   Option C: 5%\n>> Option D: 85% match";
+        String message = "Đang phân tích dữ liệu...\n";
+        // Vì đã shuffle nên ta chỉ hint chung chung
+        message += "AI gợi ý: Hãy chú ý kỹ nội dung câu hỏi về '" + currentCorrectContent + "'";
 
         new android.app.AlertDialog.Builder(requireContext())
-                .setTitle("System Logs")
+                .setTitle("Trợ giúp Tài liệu")
                 .setMessage(message)
-                .setPositiveButton("CLOSE", null)
+                .setPositiveButton("ĐÓNG", null)
                 .show();
     }
-
     private void handleSwitch() {
         if (countDownTimer != null) countDownTimer.cancel();
-
-        Toast.makeText(getContext(), "Skipping current task...", Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(getContext(), "Đổi câu hỏi...", Toast.LENGTH_SHORT).show();
         currentQuestionIndex++;
         if (currentQuestionIndex < listQuestions.size()) {
             showQuestion();
@@ -279,96 +354,13 @@ public class PlayFragment extends Fragment {
             endGame();
         }
     }
-
     private void disableLifelineButton(ImageButton btn) {
         btn.setEnabled(false);
         btn.setAlpha(0.3f);
     }
-    private void showCustomGameOverDialog() {
-        // 1. Chuẩn bị View từ file XML tùy chỉnh
-        LayoutInflater inflater = LayoutInflater.from(requireContext());
-        View dialogView = inflater.inflate(R.layout.dialog_game_over, null);
-
-        // 2. Ánh xạ các thành phần trong dialogView
-        TextView tvFinalScoreDialog = dialogView.findViewById(R.id.tvFinalScoreDialog);
-        android.widget.EditText etPlayerName = dialogView.findViewById(R.id.etPlayerName);
-        Button btnSave = dialogView.findViewById(R.id.btnSave);
-        Button btnDiscard = dialogView.findViewById(R.id.btnDiscard);
-
-        // 3. Gán dữ liệu điểm số
-        tvFinalScoreDialog.setText(String.valueOf(score));
-
-        // 4. Tạo và cấu hình Dialog
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
-        builder.setView(dialogView); // Quan trọng: Gán view tùy chỉnh vào
-        builder.setCancelable(false); // Không cho bấm ra ngoài để tắt
-
-        final android.app.AlertDialog dialog = builder.create();
-
-        // Mẹo: Làm nền dialog trong suốt để thấy được góc bo tròn của CardView
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(android.graphics.Color.TRANSPARENT));
-        }
-
-        // 5. Xử lý sự kiện nút bấm
-        btnSave.setOnClickListener(v -> {
-            String playerName = etPlayerName.getText().toString().trim();
-            if (playerName.isEmpty()) {
-                playerName = "Unknown Agent"; // Tên mặc định nếu để trống
-            }
-            saveScoreToDatabase(playerName, score);
-            dialog.dismiss(); // Đóng dialog
-        });
-
-        btnDiscard.setOnClickListener(v -> {
-            // Quay về trang chủ mà không lưu
-            Navigation.findNavController(requireView()).popBackStack();
-            dialog.dismiss();
-        });
-
-        dialog.show();
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (countDownTimer != null) countDownTimer.cancel();
     }
-
-    // Hàm lưu vào Database (Giữ nguyên logic cũ)
-    // Thay thế toàn bộ hàm saveScoreToDatabase cũ bằng hàm này:
-    private void saveScoreToDatabase(String name, int newScore) {
-        Context context = getContext();
-        if (context == null) return;
-
-        // Thêm log để soi
-        android.util.Log.d("DEBUG_GAME", "Bắt đầu lưu: " + name + " - Điểm: " + newScore);
-
-        try {
-            AppDatabase db = AppDatabase.getDatabase(context);
-            UserDao userDao = db.userDao();
-
-            // Kiểm tra user cũ
-            User existingUser = userDao.getUserByName(name);
-
-            if (existingUser == null) {
-                android.util.Log.d("DEBUG_GAME", "User mới -> Insert");
-                User newUser = new User();
-                newUser.name = name;
-                newUser.score = newScore;
-                userDao.insertUser(newUser);
-            } else {
-                android.util.Log.d("DEBUG_GAME", "User cũ -> Update");
-                if (newScore > existingUser.score) {
-                    existingUser.score = newScore;
-                    userDao.updateUser(existingUser);
-                }
-            }
-            android.util.Log.d("DEBUG_GAME", "Lưu thành công!");
-
-        } catch (Exception e) {
-            // Nếu có lỗi đỏ lòm ở đây thì biết ngay nguyên nhân
-            android.util.Log.e("DEBUG_GAME", "Lỗi lưu database: " + e.getMessage());
-            e.printStackTrace();
-        }
-
-        if (getView() != null) {
-            Navigation.findNavController(requireView()).popBackStack();
-        }
-    }
-
 }

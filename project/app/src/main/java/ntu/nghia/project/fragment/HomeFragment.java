@@ -66,7 +66,10 @@ public class HomeFragment extends Fragment {
             updateModeDisplay();
         });
         btnStartGame.setOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(R.id.action_nav_home_to_nav_play /*, bundle */);
+            GameMode selectedMode = modeList.get(currentModeIndex);
+            Bundle bundle = new Bundle();
+            bundle.putInt("selected_mode_id", selectedMode.getId());
+            Navigation.findNavController(v).navigate(R.id.action_nav_home_to_nav_play, bundle);
         });
     }
     private void updateModeDisplay() {
