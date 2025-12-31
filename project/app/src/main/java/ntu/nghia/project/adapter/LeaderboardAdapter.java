@@ -1,4 +1,4 @@
-package ntu.nghia.project;
+package ntu.nghia.project.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +7,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
+
+import ntu.nghia.project.R;
 import ntu.nghia.project.database.db_user.User;
 
 public class LeaderboardAdapter extends RecyclerView.Adapter<LeaderboardAdapter.UserViewHolder> {

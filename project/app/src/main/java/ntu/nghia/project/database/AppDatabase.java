@@ -29,7 +29,7 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    AppDatabase.class, "game_data_full_v1.db") // Đổi tên file DB mới
+                                    AppDatabase.class, "game_data_full_v1.db")
                             .allowMainThreadQueries()
                             .fallbackToDestructiveMigration()
                             .addCallback(roomCallback)

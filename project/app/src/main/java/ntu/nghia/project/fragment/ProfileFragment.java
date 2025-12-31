@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import ntu.nghia.project.LeaderboardAdapter;
+import ntu.nghia.project.adapter.LeaderboardAdapter;
 import ntu.nghia.project.R;
 import ntu.nghia.project.database.AppDatabase;
 import ntu.nghia.project.database.db_user.User;

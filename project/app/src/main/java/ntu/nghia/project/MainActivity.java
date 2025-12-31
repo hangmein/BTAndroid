@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavController navController;
     private TextView tvUser, tvBestScore;
-
     private AppDatabase appDatabase;
 
     @Override
@@ -45,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
             navController = navHostFragment.getNavController();
         }
         if (navView != null && navController != null) {
-            NavigationUI.setupWithNavController(navView, navController);
             navView.setNavigationItemSelectedListener(item -> {
                 int id = item.getItemId();
                 if (id == R.id.nav_ranking) {
@@ -66,12 +64,10 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             });
         }
-
         if (btnMenu != null) btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
         if (btnProfile != null) btnProfile.setOnClickListener(v -> navController.navigate(R.id.nav_profile));
         loadTopPlayer();
     }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -80,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
     private void loadTopPlayer() {
         new Thread(() -> {
             User topUser = appDatabase.userDao().getTopPlayer();
-
             runOnUiThread(() -> {
                 if (topUser != null) {
                     tvUser.setText("Top 1: " + topUser.name);

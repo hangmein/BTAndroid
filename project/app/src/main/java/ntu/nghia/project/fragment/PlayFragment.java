@@ -43,12 +43,9 @@ public class PlayFragment extends Fragment {
     private boolean is5050Used = false;
     private boolean isDocsUsed = false;
     private boolean isSwitchUsed = false;
-
-    // [QUAN TRỌNG] Biến lưu nội dung đáp án đúng (vì vị trí nút sẽ bị đảo)
     private String currentCorrectContent = "";
 
     public PlayFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -61,7 +58,6 @@ public class PlayFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // 1. Ánh xạ View
         btnHelp5050 = view.findViewById(R.id.btnHelp5050);
         btnHelpDocs = view.findViewById(R.id.btnHelpDocs);
         btnHelpSwitch = view.findViewById(R.id.btnHelpSwitch);
@@ -75,8 +71,6 @@ public class PlayFragment extends Fragment {
         btnOptionD = view.findViewById(R.id.btnOptionD);
 
         setupLifelines();
-
-        // 2. Lấy dữ liệu
         AppDatabase db = AppDatabase.getDatabase(requireContext());
         QuestionDao dao = db.questionDao();
 
@@ -84,7 +78,6 @@ public class PlayFragment extends Fragment {
         if (getArguments() != null) {
             modeIdCanLay = getArguments().getInt("selected_mode_id", 1);
         }
-
         listQuestions = dao.getQuestionsByMode(modeIdCanLay);
 
         if (listQuestions != null && listQuestions.size() > 0) {
@@ -94,14 +87,11 @@ public class PlayFragment extends Fragment {
             Toast.makeText(getContext(), "Đang tải dữ liệu...", Toast.LENGTH_SHORT).show();
             Navigation.findNavController(view).popBackStack();
         }
-
-        // [SỬA ĐỔI] Truyền thẳng nút bấm vào hàm checkAnswer thay vì chuỗi "A", "B"
         btnOptionA.setOnClickListener(v -> checkAnswer(btnOptionA));
         btnOptionB.setOnClickListener(v -> checkAnswer(btnOptionB));
         btnOptionC.setOnClickListener(v -> checkAnswer(btnOptionC));
         btnOptionD.setOnClickListener(v -> checkAnswer(btnOptionD));
     }
-
     private void setupLifelines() {
         btnHelp5050.setOnClickListener(v -> {
             if (!is5050Used) {
@@ -110,7 +100,6 @@ public class PlayFragment extends Fragment {
                 disableLifelineButton(btnHelp5050);
             }
         });
-
         btnHelpDocs.setOnClickListener(v -> {
             if (!isDocsUsed) {
                 handleDocs();
@@ -127,31 +116,23 @@ public class PlayFragment extends Fragment {
             }
         });
     }
-
-    // --- [LOGIC MỚI] ĐẢO VỊ TRÍ CÂU HỎI ---
     private void showQuestion() {
         resetButtonColors();
         Question q = listQuestions.get(currentQuestionIndex);
 
         tvQuestionContent.setText(q.content);
 
-        // 1. Tìm ra nội dung đúng thực sự là gì
         if (q.correctAnswer.equals("A")) currentCorrectContent = q.optionA;
         else if (q.correctAnswer.equals("B")) currentCorrectContent = q.optionB;
         else if (q.correctAnswer.equals("C")) currentCorrectContent = q.optionC;
         else currentCorrectContent = q.optionD;
 
-        // 2. Tạo danh sách tạm để trộn
         List<String> options = new ArrayList<>();
         options.add(q.optionA);
         options.add(q.optionB);
         options.add(q.optionC);
         options.add(q.optionD);
-
-        // 3. Trộn ngẫu nhiên danh sách này
         Collections.shuffle(options);
-
-        // 4. Gán lên giao diện (Lúc này vị trí đã thay đổi so với database)
         btnOptionA.setText("A. " + options.get(0));
         btnOptionB.setText("B. " + options.get(1));
         btnOptionC.setText("C. " + options.get(2));
@@ -162,32 +143,20 @@ public class PlayFragment extends Fragment {
 
         startTimer();
     }
-
-    // --- [LOGIC MỚI] KIỂM TRA THEO NỘI DUNG ---
     private void checkAnswer(Button clickedButton) {
         if (countDownTimer != null) countDownTimer.cancel();
         setButtonsEnabled(false);
-
-        // Lấy text trên nút người dùng bấm (Ví dụ: "A. Con Mèo")
         String buttonText = clickedButton.getText().toString();
-
-        // Kiểm tra xem text đó có CHỨA nội dung đúng không
         if (buttonText.contains(currentCorrectContent)) {
-            // ĐÚNG
             clickedButton.setBackgroundColor(Color.parseColor("#4CAF50"));
             score += 100;
             tvScore.setText("Score: " + score);
         } else {
-            // SAI
             clickedButton.setBackgroundColor(Color.parseColor("#F44336"));
-            // Tìm và hiện đáp án đúng (vì nó có thể nằm ở nút bất kỳ)
             highlightCorrectAnswer();
         }
-
         new Handler().postDelayed(this::nextQuestion, 1000);
     }
-
-    // --- [LOGIC MỚI] TÌM NÚT CHỨA ĐÁP ÁN ĐÚNG ĐỂ TÔ XANH ---
     private void highlightCorrectAnswer() {
         if (btnOptionA.getText().toString().contains(currentCorrectContent)) {
             btnOptionA.setBackgroundColor(Color.parseColor("#4CAF50"));
@@ -202,7 +171,6 @@ public class PlayFragment extends Fragment {
             btnOptionD.setBackgroundColor(Color.parseColor("#4CAF50"));
         }
     }
-
     private void nextQuestion() {
         currentQuestionIndex++;
         if (currentQuestionIndex < listQuestions.size()) {
@@ -212,12 +180,10 @@ public class PlayFragment extends Fragment {
             endGame();
         }
     }
-
     private void endGame() {
         Toast.makeText(getContext(), "Kết thúc! Tổng điểm: " + score, Toast.LENGTH_LONG).show();
         showCustomGameOverDialog();
     }
-
     private void showCustomGameOverDialog() {
         if (getContext() == null) return;
         LayoutInflater inflater = LayoutInflater.from(requireContext());
@@ -227,7 +193,6 @@ public class PlayFragment extends Fragment {
         android.widget.EditText etPlayerName = dialogView.findViewById(R.id.etPlayerName);
         Button btnSave = dialogView.findViewById(R.id.btnSave);
         Button btnDiscard = dialogView.findViewById(R.id.btnDiscard);
-
         tvFinalScoreDialog.setText(String.valueOf(score));
 
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(requireContext());
@@ -241,7 +206,7 @@ public class PlayFragment extends Fragment {
 
         btnSave.setOnClickListener(v -> {
             String playerName = etPlayerName.getText().toString().trim();
-            if (playerName.isEmpty()) playerName = "Unknown Agent";
+            if (playerName.isEmpty()) playerName = "Unknown Student";
             saveScoreToDatabase(playerName, score);
             dialog.dismiss();
         });
@@ -253,7 +218,6 @@ public class PlayFragment extends Fragment {
 
         dialog.show();
     }
-
     private void saveScoreToDatabase(String name, int newScore) {
         Context context = getContext();
         if (context == null) return;
@@ -279,7 +243,6 @@ public class PlayFragment extends Fragment {
             Toast.makeText(context, "Lỗi lưu điểm: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-
     private void startTimer() {
         if (countDownTimer != null) countDownTimer.cancel();
         countDownTimer = new CountDownTimer(TIME_LIMIT, 1000) {
@@ -287,6 +250,7 @@ public class PlayFragment extends Fragment {
             public void onTick(long millisUntilFinished) {
                 tvTimer.setText(String.valueOf(millisUntilFinished / 1000));
             }
+
             @Override
             public void onFinish() {
                 tvTimer.setText("0");
@@ -294,7 +258,6 @@ public class PlayFragment extends Fragment {
             }
         }.start();
     }
-
     private void resetButtonColors() {
         int defaultColor = R.drawable.btn_tech;
         btnOptionA.setBackgroundResource(defaultColor);
@@ -314,10 +277,7 @@ public class PlayFragment extends Fragment {
         btnOptionC.setEnabled(enable);
         btnOptionD.setEnabled(enable);
     }
-
-    // --- [LOGIC MỚI] 50:50 CŨNG PHẢI CHECK THEO NỘI DUNG ---
     private void handle5050() {
-        // Tìm các nút SAI (không chứa nội dung đúng)
         List<Button> wrongButtons = new ArrayList<>();
 
         if (!btnOptionA.getText().toString().contains(currentCorrectContent)) wrongButtons.add(btnOptionA);
@@ -325,7 +285,6 @@ public class PlayFragment extends Fragment {
         if (!btnOptionC.getText().toString().contains(currentCorrectContent)) wrongButtons.add(btnOptionC);
         if (!btnOptionD.getText().toString().contains(currentCorrectContent)) wrongButtons.add(btnOptionD);
 
-        // Ẩn 2 nút sai bất kỳ
         Collections.shuffle(wrongButtons);
         if (wrongButtons.size() >= 2) {
             wrongButtons.get(0).setVisibility(View.INVISIBLE);
@@ -335,8 +294,7 @@ public class PlayFragment extends Fragment {
     }
     private void handleDocs() {
         String message = "Đang phân tích dữ liệu...\n";
-        // Vì đã shuffle nên ta chỉ hint chung chung
-        message += "AI gợi ý: Hãy chú ý kỹ nội dung câu hỏi về '" + currentCorrectContent + "'";
+        message += "Đáp án là: '" + currentCorrectContent + "'";
 
         new android.app.AlertDialog.Builder(requireContext())
                 .setTitle("Trợ giúp Tài liệu")

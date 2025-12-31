@@ -41,11 +41,10 @@ public class HomeFragment extends Fragment {
 
     private void setupModes() {
         modeList = new ArrayList<>();
-        modeList.add(new GameMode(1, "JUNIOR DEV", "Kiến thức cơ bản Java & OOP", android.R.drawable.ic_dialog_info));
-        modeList.add(new GameMode(2, "SENIOR DEV", "Thuật toán, Cấu trúc dữ liệu nâng cao", android.R.drawable.ic_dialog_dialer));
-        modeList.add(new GameMode(3, "PROJECT LEAD", "Kiến trúc hệ thống, Design Patterns", android.R.drawable.ic_dialog_map));
+        modeList.add(new GameMode(1, "IT Cơ bản", "Phần cứng, Windows, Mạng", android.R.drawable.ic_dialog_info));
+        modeList.add(new GameMode(2, "SENIOR DEV", "Java, Android, SQL", android.R.drawable.ic_dialog_dialer));
+        modeList.add(new GameMode(3, "PROJECT LEAD", "System Design, Security, Pattern", android.R.drawable.ic_dialog_map));
     }
-
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
